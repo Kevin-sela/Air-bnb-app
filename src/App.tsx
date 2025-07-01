@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, useDisclosure } from '@heroui/react';
-// import { useScrollReveal } from 'react-bits';
+/* Removed import of useScrollReveal from 'react-bits' because it is not exported by the package */
 // If you need scroll reveal, implement your own hook or use an alternative library.
 import io from 'socket.io-client';
 import toast, { Toaster } from 'react-hot-toast';
@@ -25,7 +25,6 @@ const PushNotificationRegistration: React.FC<PushNotificationRegistrationProps> 
 
 const socket = io('https://your-server-url.com'); // Replace with your live server URL
 const SectionWrapper = ({ id, children, bg, title }: { id: string; children: React.ReactNode; bg: string; title: string }) => {
-  // const reveal = useScrollReveal({ y: 40, duration: 1000, delay: 100 });
   const [isInView, setIsInView] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
 
@@ -53,10 +52,7 @@ const SectionWrapper = ({ id, children, bg, title }: { id: string; children: Rea
   return (
     <section
       id={id}
-      ref={(el) => {
-        sectionRef.current = el;
-        // reveal.ref.current = el;
-      }}
+      ref={sectionRef}
       className={`relative min-h-screen flex flex-col items-center justify-start px-4 py-20 ${bg} transition-all duration-700 border-t-4 border-transparent ${isInView ? 'rounded-none border-white/40' : 'rounded-t-full'} animate-section-border`}
     >
       <div className={`absolute inset-0 z-0 ${isInView ? 'rounded-none' : 'rounded-t-full'} pointer-events-none border-gradient border-t-4 border-transparent animate-glow-border transition-all duration-700`} />
@@ -68,9 +64,10 @@ const SectionWrapper = ({ id, children, bg, title }: { id: string; children: Rea
             overflow: 'hidden',
             transition: 'all 0.6s ease-in-out',
           }}
+          className="flex items-center justify-center p-4 mx-auto rounded-full animate-bounce bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500"
         >
-          <span className="block sm:hidden">{title.charAt(0)}</span>
-          <span className="hidden sm:block">{title}</span>
+          <span className="block font-bold text-white sm:hidden">{title.charAt(0)}</span>
+          <span className="hidden font-bold text-white sm:block">{title}</span>
         </div>
       </div>
       <div className="relative z-10 w-full max-w-7xl animate-fade-in-up">
