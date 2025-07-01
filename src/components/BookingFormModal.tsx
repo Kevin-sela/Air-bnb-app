@@ -8,12 +8,22 @@ import {
   Button,
   Input,
   Textarea,
+  Select,
+  SelectItem,
 } from '@heroui/react';
 
 interface BookingFormModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const roomTypes = [
+  { key: 'single', label: 'Single' },
+  { key: 'double', label: 'Double' },
+  { key: 'suite', label: 'Suite' },
+  { key: 'deluxe', label: 'Deluxe' },
+  { key: 'family', label: 'Family' },
+];
 
 const BookingFormModal: React.FC<BookingFormModalProps> = ({ isOpen, onClose }) => {
   const [form, setForm] = useState({
@@ -62,12 +72,16 @@ const BookingFormModal: React.FC<BookingFormModalProps> = ({ isOpen, onClose }) 
             value={form.email}
             onChange={(e) => handleChange('email', e.target.value)}
           />
-          <Input
+          <Select
+            className="max-w-xs"
+            items={roomTypes}
             label="Room Type"
-            fullWidth
+            placeholder="Select a room type"
             value={form.roomType}
             onChange={(e) => handleChange('roomType', e.target.value)}
-          />
+          >
+            {(room) => <SelectItem>{room.label}</SelectItem>}
+          </Select>
           <Input
             label="Date"
             type="date"
@@ -81,19 +95,19 @@ const BookingFormModal: React.FC<BookingFormModalProps> = ({ isOpen, onClose }) 
             value={form.message}
             onChange={(e) => handleChange('message', e.target.value)}
           />
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              color="primary"
-              onClick={handleSubmit}
-              className="w-full"
-            >
-              Submit Booking
-            </Button>
-          </ModalFooter>
-              </ModalContent>
-            </Modal>
-          );
-      };
-      
-      export default BookingFormModal;
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="primary"
+            onClick={handleSubmit}
+            className="w-full"
+          >
+            Submit Booking
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
+
+export default BookingFormModal;
