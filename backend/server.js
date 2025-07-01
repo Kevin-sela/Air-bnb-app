@@ -7,63 +7,33 @@ require('dotenv').config();
 
 const bookingsRoute = require('./routes/bookings');
 const pushSubscriptionsRoute = require('./routes/pushSubscriptions');
-const { router: authRouter } = require('./routes/auth');
-// const admin = require('firebase-admin'); // Uncomment if using FCM
 
 const app = express();
 const server = http.createServer(app);
 
-const allowedOrigins = ['https://air-bnb-app-gamma.vercel.app'];
-
+// Allow only your frontend origin
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
-  },
+    origin: 'https://air-bnb-app-gamma.vercel.app',
+    methods: ['GET', 'POST']
+  }
 });
 
-app.use(cors({
-  origin: function(origin, callback){
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  }
-}));
-
-// Optional: Setup Firebase Admin SDK
-// const serviceAccount = require('./firebase-service-account.json');
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-// });
-
-app.use(cors());
+// Middleware
+app.use(cors({ origin: 'https://air-bnb-app-gamma.vercel.app' }));
 app.use(express.json());
 
-app.use('/api/auth', authRouter);
-app.use('/api/bookings', bookingsRoute(io)); // pass io to access in routes
+// Routes
+app.use('/api/bookings', bookingsRoute(io)); // pass io to route
 app.use('/api/push-subscriptions', pushSubscriptionsRoute);
 
-// Basic endpoint
-app.get('/', (req, res) => res.send('🏡 Hebron Hostel Backend Running...'));
-
-// Socket.IO connection
-io.on('connection', (socket) => {
-  console.log('📡 A client connected');
-
-  socket.on('disconnect', () => {
-    console.log('❌ Client disconnected');
-  });
-});
-
-// Connect to MongoDB
+// MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => {
-  console.log('✅ Connected to MongoDB');
+  console.log('Connected to MongoDB');
   server.listen(process.env.PORT || 5000, () =>
-    console.log(`🚀 Server running on port ${process.env.PORT || 5000}`)
+    console.log(`Server running on port ${process.env.PORT || 5000}`)
   );
-}).catch((err) => console.error('❌ MongoDB connection error:', err));
+}).catch(err => console.error(err));
