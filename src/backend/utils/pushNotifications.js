@@ -1,7 +1,9 @@
+
+
 const webpush = require('web-push');
 
 webpush.setVapidDetails(
-  'mailto:you@example.com',
+  'mailto:kofori787@gmail.com',
   process.env.VAPID_PUBLIC_KEY,
   process.env.VAPID_PRIVATE_KEY
 );

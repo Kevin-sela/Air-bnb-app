@@ -23,7 +23,7 @@ const PushNotificationRegistration: React.FC<PushNotificationRegistrationProps> 
 };
 
 
-const socket = io('https://air-bnb-app-6.onrender.com', { transports: ['websocket'] });
+const socket = io('https://air-bnb-app-7.onrender.com', { transports: ['websocket'] });
 const SectionWrapper = ({ id, children, bg, title }: { id: string; children: React.ReactNode; bg: string; title: string }) => {
   const [isInView, setIsInView] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
