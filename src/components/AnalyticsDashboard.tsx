@@ -16,24 +16,24 @@ import React from 'react';
       return (
         <Card className="mb-8">
           <CardBody>
-            <h2 className="text-2xl font-semibold mb-4">Analytics Dashboard</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <h2 className="mb-4 text-2xl font-semibold">Analytics Dashboard</h2>
+            <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-3">
               <div className="flex items-center">
-                <Icon icon="lucide:users" className="text-primary mr-2 text-2xl" />
+                <Icon icon="lucide:users" className="mr-2 text-2xl text-primary" />
                 <div>
                   <p className="text-sm text-default-500">Total Guests</p>
                   <p className="text-lg font-semibold">1,234</p>
                 </div>
               </div>
               <div className="flex items-center">
-                <Icon icon="lucide:calendar" className="text-primary mr-2 text-2xl" />
+                <Icon icon="lucide:calendar" className="mr-2 text-2xl text-primary" />
                 <div>
                   <p className="text-sm text-default-500">Bookings This Month</p>
                   <p className="text-lg font-semibold">156</p>
                 </div>
               </div>
               <div className="flex items-center">
-                <Icon icon="lucide:percent" className="text-primary mr-2 text-2xl" />
+                <Icon icon="lucide:percent" className="mr-2 text-2xl text-primary" />
                 <div>
                   <p className="text-sm text-default-500">Occupancy Rate</p>
                   <p className="text-lg font-semibold">78%</p>
@@ -41,7 +41,7 @@ import React from 'react';
               </div>
             </div>
             <div className="mb-4">
-              <p className="text-sm text-default-500 mb-2">Room Availability</p>
+              <p className="mb-2 text-sm text-default-500">Room Availability</p>
               <Progress color="primary" aria-label="Room Availability" value={22} className="max-w-md" />
             </div>
             <div className="h-[300px]">
