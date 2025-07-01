@@ -4,6 +4,7 @@
   "outputDirectory": "dist",
   "routes": [
     { "src": "/api/(.*)", "dest": "/backend/server.js" },
+    { "src": "/(.*\\.(js|css|svg|png|jpg|jpeg|gif|ico|json))", "dest": "/$1" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
