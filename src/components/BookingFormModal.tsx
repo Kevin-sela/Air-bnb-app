@@ -10,6 +10,7 @@ import {
   Textarea,
   Select,
   SelectItem,
+  Alert,
 } from '@heroui/react';
 
 interface BookingFormModalProps {
@@ -34,24 +35,28 @@ const BookingFormModal: React.FC<BookingFormModalProps> = ({ isOpen, onClose }) 
     message: '',
   });
 
+  const [showSuccess, setShowSuccess] = useState(false);
+
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async () => {
     try {
-      await fetch('http://localhost:5000/api/bookings', {
+      await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-      alert('Booking submitted!');
+      setShowSuccess(true);
       setForm({ name: '', email: '', roomType: '', date: '', message: '' });
-      onClose();
+      // Keep modal open to show success message
     } catch (err) {
       alert('Error submitting booking');
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="backdrop-blur-sm">
@@ -59,6 +64,14 @@ const BookingFormModal: React.FC<BookingFormModalProps> = ({ isOpen, onClose }) 
         <ModalHeader className="text-2xl font-semibold text-white">
           Book Your Stay
         </ModalHeader>
+        {showSuccess && (
+          <Alert
+            color="success"
+            title="Booking Confirmed"
+            className="mb-4"
+            onClose={() => setShowSuccess(false)}
+          />
+        )}
         <ModalBody className="space-y-4">
           <Input
             label="Full Name"

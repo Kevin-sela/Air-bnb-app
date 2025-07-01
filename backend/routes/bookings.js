@@ -1,48 +1,60 @@
 const express = require('express');
 const Booking = require('../models/Booking');
-const router = express.Router();
-
-const io = require('../server').io; // Import io from server.js
 const { sendNotification } = require('../utils/pushNotifications');
-const pushSubscriptionsRoute = require('./pushSubscriptions');
+const getSubscriptions = require('./pushSubscriptions').getSubscriptions;
 
-const subscriptions = pushSubscriptionsRoute.subscriptions || [];
+module.exports = (io) => {
+  const router = express.Router();
 
-// POST new booking
-router.post('/', async (req, res) => {
-  try {
-    const booking = new Booking(req.body);
-    await booking.save();
+  // POST new booking
+  router.post('/', async (req, res) => {
+    try {
+      const booking = new Booking(req.body);
+      const savedBooking = await booking.save();
 
-    // Emit booking event to all connected clients
-    io.emit('newBooking', booking);
+      // Emit to all connected clients
+      io.emit('new-booking', savedBooking);
 
-    // Send push notifications to all subscriptions
-    const notificationPayload = {
-      title: 'New Booking',
-      body: `New booking from ${booking.name} for ${booking.roomType}`,
-    };
+      // Prepare push notification
+      const notificationPayload = {
+        title: 'New Booking 📩',
+        body: `Booking from ${savedBooking.name} for ${savedBooking.roomType}`,
+        data: {
+          name: savedBooking.name,
+          date: savedBooking.date,
+          roomType: savedBooking.roomType,
+        },
+      };
 
-    subscriptions.forEach(subscription => {
-      sendNotification(subscription, notificationPayload).catch(err => {
-        console.error('Error sending notification', err);
-      });
-    });
+      // Get subscriptions (mocked or real DB)
+      const subscriptions = getSubscriptions();
 
-    res.status(201).json({ success: true, booking });
-  } catch (err) {
-    res.status(400).json({ success: false, error: err.message });
-  }
-});
+      // Send push notifications
+      for (const sub of subscriptions) {
+        try {
+          await sendNotification(sub, notificationPayload);
+        } catch (err) {
+          console.error('❌ Failed to send push notification', err);
+        }
+      }
 
-// GET all bookings (admin use)
-router.get('/', async (req, res) => {
-  try {
-    const bookings = await Booking.find().sort({ createdAt: -1 });
-    res.json(bookings);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+      res.status(201).json({ success: true, booking: savedBooking });
+    } catch (error) {
+      console.error('❌ Booking Error:', error.message);
+      res.status(400).json({ success: false, error: error.message });
+    }
+  });
 
-module.exports = router;
+  // GET all bookings (Admin access)
+  router.get('/', async (req, res) => {
+    try {
+      const bookings = await Booking.find().sort({ createdAt: -1 });
+      res.json(bookings);
+    } catch (error) {
+      console.error('❌ Fetch Error:', error.message);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  return router;
+};
