@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Textarea, Select } from '@heroui/react';
-import io, { Socket } from 'socket.io-client';
+import React, { useState } from 'react';
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Input,
+  Textarea,
+} from '@heroui/react';
 
-interface Booking {
-  name: string;
-  email: string;
-  roomType: string;
-  date: string;
-  message: string;
+interface BookingFormModalProps {
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-const socket: Socket = io('http://localhost:5000'); // Adjust URL as needed
-const BookingFormModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
-  const [formData, setFormData] = useState<Booking>({
+const BookingFormModal: React.FC<BookingFormModalProps> = ({ isOpen, onClose }) => {
+  const [form, setForm] = useState({
     name: '',
     email: '',
     roomType: '',
@@ -20,99 +24,76 @@ const BookingFormModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ 
     message: '',
   });
 
-  useEffect(() => {
-    socket.on('newBooking', (booking: Booking) => {
-      alert(`New booking from ${booking.name} for ${booking.roomType}`);
-    });
-
-    return () => {
-      socket.off('newBooking');
-    };
-  }, []);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/bookings', {
+      await fetch('http://localhost:5000/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(form),
       });
-      if (response.ok) {
-        alert('Booking submitted successfully!');
-        setFormData({ name: '', email: '', roomType: '', date: '', message: '' });
-        onClose();
-      } else {
-        alert('Failed to submit booking.');
-      }
-    } catch (error) {
-      alert('Error submitting booking.');
+      alert('Booking submitted!');
+      setForm({ name: '', email: '', roomType: '', date: '', message: '' });
+      onClose();
+    } catch (err) {
+      alert('Error submitting booking');
     }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalContent>
-        <ModalHeader>Book a Room</ModalHeader>
-        <ModalBody>
-          <form onSubmit={handleSubmit} id="booking-form">
-            <Input
-              name="name"
-              placeholder="Name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="mb-4"
-            />
-            <Input
-              name="email"
-              type="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="mb-4"
-            />
-            <Select
-              name="roomType"
-              value={formData.roomType}
-              onChange={handleChange}
-              required
-              className="mb-4"
+    <Modal isOpen={isOpen} onClose={onClose} className="backdrop-blur-sm">
+      <ModalContent className="border shadow-xl rounded-xl bg-gradient-to-br from-purple-800 via-indigo-900 to-black border-white/10">
+        <ModalHeader className="text-2xl font-semibold text-white">
+          Book Your Stay
+        </ModalHeader>
+        <ModalBody className="space-y-4">
+          <Input
+            label="Full Name"
+            fullWidth
+            value={form.name}
+            onChange={(e) => handleChange('name', e.target.value)}
+          />
+          <Input
+            label="Email"
+            fullWidth
+            value={form.email}
+            onChange={(e) => handleChange('email', e.target.value)}
+          />
+          <Input
+            label="Room Type"
+            fullWidth
+            value={form.roomType}
+            onChange={(e) => handleChange('roomType', e.target.value)}
+          />
+          <Input
+            label="Date"
+            type="date"
+            fullWidth
+            value={form.date}
+            onChange={(e) => handleChange('date', e.target.value)}
+          />
+          <Textarea
+            label="Message"
+            fullWidth
+            value={form.message}
+            onChange={(e) => handleChange('message', e.target.value)}
+          />
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="primary"
+              onClick={handleSubmit}
+              className="w-full"
             >
-              <option value="" disabled>Select Room Type</option>
-              <option value="Single">Single</option>
-              <option value="Double">Double</option>
-              <option value="Suite">Suite</option>
-            </Select>
-            <Input
-              name="date"
-              type="date"
-              placeholder="Date"
-              value={formData.date}
-              onChange={handleChange}
-              required
-              className="mb-4"
-            />
-            <Textarea
-              name="message"
-              placeholder="Message"
-              value={formData.message}
-              onChange={handleChange}
-              className="mb-4"
-            />
-          </form>
-        </ModalBody>
-        <ModalFooter>
-          <Button type="submit" form="booking-form">Submit</Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
-  );
-};
-
-export default BookingFormModal;
+              Submit Booking
+            </Button>
+          </ModalFooter>
+              </ModalContent>
+            </Modal>
+          );
+      };
+      
+      export default BookingFormModal;
