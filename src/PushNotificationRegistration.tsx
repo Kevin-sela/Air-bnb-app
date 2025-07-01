@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
-const SERVER_URL = import.meta.env.VITE_BACKEND_URL || 'https://your-vercel-backend-url.vercel.app';
-const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY || 'BP-gJitB9nKv2e22xy7VjrvPP3MmJXsQ1VY78MkLKbdhsgpiYIchnF_hLkNqtR9073RpYxT2MhHoXXftRRkzEFk';
+const SERVER_URL = (import.meta.env && import.meta.env.VITE_BACKEND_URL) || 'https://air-bnb-app.vercel.app';
+const VAPID_PUBLIC_KEY = (import.meta.env && import.meta.env.VITE_VAPID_PUBLIC_KEY) || 'BP-gJitB9nKv2e22xy7VjrvPP3MmJXsQ1VY78MkLKbdhsgpiYIchnF_hLkNqtR9073RpYxT2MhHoXXftRRkzEFk';
 
 function urlBase64ToUint8Array(base64String: string) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);

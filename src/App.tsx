@@ -23,7 +23,7 @@ const PushNotificationRegistration: React.FC<PushNotificationRegistrationProps> 
 };
 
 
-const socket = io('https://your-server-url.com'); // Replace with your live server URL
+const socket = io('https://vercel.com/kevin-selas-projects/air-bnb-app/7KCHcRojvDdMUhdjgmZvtMrsnWw7'); // Replace with your live server URL
 const SectionWrapper = ({ id, children, bg, title }: { id: string; children: React.ReactNode; bg: string; title: string }) => {
   const [isInView, setIsInView] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
