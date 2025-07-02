@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Input } from '@heroui/react';
 
-export const BookingFormModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+const BookingFormModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const [name, setName] = useState('');
   const [roomType, setRoomType] = useState('');
   const [date, setDate] = useState('');
@@ -49,31 +49,33 @@ export const BookingFormModal: React.FC<{ isOpen: boolean; onClose: () => void }
           onChange={(e) => setRoomType(e.target.value)}
           placeholder="Enter room type"
         />
-            <Input
-              label="Date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              placeholder="Enter date"
-            />
-            {/* Add any additional form fields or buttons here */}
-            {errorMessage && <div className="text-red-500">{errorMessage}</div>}
-            <div className="flex justify-end space-x-2">
-              <button
-                className="btn btn-secondary"
-                onClick={handleClose}
-                type="button"
-              >
-                Cancel
-              </button>
-              <button
-                className="btn btn-primary"
-                onClick={handleSubmit}
-                type="button"
-              >
-                Book
-              </button>
-            </div>
-          </div>
-                </Modal>
-            );
-        };
+        <Input
+          label="Date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          placeholder="Enter date"
+        />
+        {/* Add any additional form fields or buttons here */}
+        {errorMessage && <div className="text-red-500">{errorMessage}</div>}
+        <div className="flex justify-end space-x-2">
+          <button
+            className="btn btn-secondary"
+            onClick={handleClose}
+            type="button"
+          >
+            Cancel
+          </button>
+          <button
+            className="btn btn-primary"
+            onClick={handleSubmit}
+            type="button"
+          >
+            Book
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+export default BookingFormModal;
