@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Modal, Button, Input } from '@heroui/react';
 
+import React, { useState } from 'react';
+import { Modal, Button, Input } from '@heroui/react';
+
 const BookingFormModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const [name, setName] = useState('');
   const [roomType, setRoomType] = useState('');
