@@ -1,10 +1,10 @@
 const express = require('express');
 const Booking = require('../models/Booking');
+const Subscription = require('../models/Subscription');
 const { sendNotification } = require('../utils/pushNotifications');
 
 module.exports = (io) => {
   const router = express.Router();
-  const subscriptions = []; // You should store these properly in DB in production
 
   router.post('/', async (req, res) => {
     try {
@@ -14,14 +14,18 @@ module.exports = (io) => {
       // Emit real-time booking event
       io.emit('new-booking', booking);
 
-      // Push notification
+      // Fetch all subscriptions from DB
+      const subscriptions = await Subscription.find();
+
+      // Push notification payload
       const payload = {
         title: 'New Booking',
         body: `Booking from ${booking.name} for ${booking.roomType}`,
       };
 
+      // Send push notifications to all subscriptions
       subscriptions.forEach(sub => {
-        sendNotification(sub, payload).catch(console.error);
+        sendNotification(sub.subscription, payload).catch(console.error);
       });
 
       res.status(201).json({ success: true, booking });
