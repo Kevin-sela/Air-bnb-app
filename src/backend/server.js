@@ -13,7 +13,7 @@ const server = http.createServer(app);
 // Allow only your frontend origin
 const io = new Server(server, {
   cors: {
-    origin: 'https://air-bnb-app-gamma.vercel.app',
+    origin: 'https://air-bnb-app-9.onrender.com',
     methods: ['GET', 'POST']
   }
 });

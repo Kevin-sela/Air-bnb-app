@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { Modal, Button, Input } from '@heroui/react';
+import { Modal, Input } from '@heroui/react';
 
-import React, { useState } from 'react';
-import { Modal, Button, Input } from '@heroui/react';
-
-const BookingFormModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+export const BookingFormModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const [name, setName] = useState('');
   const [roomType, setRoomType] = useState('');
   const [date, setDate] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async () => {
     try {
@@ -22,16 +20,22 @@ const BookingFormModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ 
       if (!response.ok) {
         throw new Error('Failed to submit booking');
       }
+      setErrorMessage('');
       // Optionally, clear form or show success message here
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting booking:', error);
-      // Optionally, show error message to user
+      setErrorMessage(error.message || 'An error occurred while submitting booking.');
     }
   };
 
+  const handleClose = () => {
+    setErrorMessage('');
+    onClose();
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Book a Room">
+    <Modal isOpen={isOpen} onClose={handleClose} title="Book a Room">
       <div className="space-y-4">
         <Input
           label="Name"
@@ -45,18 +49,31 @@ const BookingFormModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ 
           onChange={(e) => setRoomType(e.target.value)}
           placeholder="Enter room type"
         />
-        <Input
-          label="Date"
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-        />
-        <Button onPress={handleSubmit} color="primary" variant="shadow" className="w-full">
-          Submit Booking
-        </Button>
-      </div>
-    </Modal>
-  );
-};
-
-export default BookingFormModal;
+            <Input
+              label="Date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              placeholder="Enter date"
+            />
+            {/* Add any additional form fields or buttons here */}
+            {errorMessage && <div className="text-red-500">{errorMessage}</div>}
+            <div className="flex justify-end space-x-2">
+              <button
+                className="btn btn-secondary"
+                onClick={handleClose}
+                type="button"
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={handleSubmit}
+                type="button"
+              >
+                Book
+              </button>
+            </div>
+          </div>
+                </Modal>
+            );
+        };
